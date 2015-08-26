@@ -54,14 +54,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                // ListView Clicked item index
+
                 int itemPosition = position;
-                // ListView Clicked item value
                 String itemValue = (String) listView1.getItemAtPosition(position);
-                // Show Alert
-                Toast.makeText(getApplicationContext(),
-                        "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
-                        .show();
+
+                Intent intent = new Intent(MainActivity.this, ConcreteChannelActivity.class);
+                intent.putExtra("CH_NAME", itemValue);
+                startActivity(intent);
+
             }
 
         });
@@ -73,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
                 editor.remove(s);
                 editor.commit();
                 items.remove(position);
+                Toast.makeText(getApplicationContext(),
+                        "Canal eliminado : " + s, Toast.LENGTH_LONG)
+                        .show();
                 reloadListView();
                 return true;
             }
@@ -81,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ToActivity.class);
+                Intent intent = new Intent(MainActivity.this, AddChannelsActivity.class);
                 intent.putStringArrayListExtra("FAVORITES",items);
                 startActivityForResult(intent,1);
             }

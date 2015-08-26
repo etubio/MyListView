@@ -12,7 +12,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ToActivity extends AppCompatActivity {
+public class AddChannelsActivity extends AppCompatActivity {
 
     ListView listView2;
     ArrayList<String> selectedItems = new ArrayList<>();
