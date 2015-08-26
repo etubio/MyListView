@@ -1,6 +1,8 @@
 package com.example.okos.mylistview;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,8 +13,12 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+
+    static final String SHARED_PREFERENCES_KEY = "ActivitySharedPreferences_data";
+    SharedPreferences.Editor editor;
 
     ArrayList<String> items = new ArrayList<>();
     ListView listView1;
@@ -29,12 +35,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Persistencia
+        SharedPreferences sPreferences = getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
+        editor   = sPreferences.edit();
 
         listView1 = (ListView) findViewById(R.id.listView1);
         ImageButton button = (ImageButton) findViewById(R.id.button);
 
-        items.add("Neox");
-        items.add("A3");
+        Map<String, ?> map = sPreferences.getAll();
+        for (Map.Entry<String, ?> entry : map.entrySet()) items.add((String) entry.getValue());
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, items);
         listView1.setAdapter(adapter);
@@ -59,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
         listView1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                String s = items.get(position);
+                editor.remove(s);
+                editor.commit();
                 items.remove(position);
                 reloadListView();
                 return true;
@@ -86,7 +99,10 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList<String> selectedItems = new ArrayList<>();
                 selectedItems = data.getStringArrayListExtra("SELECTED");
                 items.addAll(selectedItems);
-
+                for (String s:selectedItems) {
+                    editor.putString(s, s);
+                    editor.commit();
+                }
                 // Reload listView1
                 reloadListView();
             }
